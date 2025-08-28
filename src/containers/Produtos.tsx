@@ -1,26 +1,30 @@
-import { Produto as ProdutoType } from '../App'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '../store'
+import { adicionarAoCarrinho } from '../store/cartSlice'
+import { favoritar } from '../store/favoritesSlice'
 import Produto from '../components/Produto'
+import { Produto as ProdutoType } from '../models/Produto'
 
 import * as S from './styles'
 
 type Props = {
   produtos: ProdutoType[]
-  favoritos: ProdutoType[]
-  adicionarAoCarrinho: (produto: ProdutoType) => void
-  favoritar: (produto: ProdutoType) => void
 }
 
-const ProdutosComponent = ({
-  produtos,
-  favoritos,
-  adicionarAoCarrinho,
-  favoritar
-}: Props) => {
-  const produtoEstaNosFavoritos = (produto: ProdutoType) => {
-    const produtoId = produto.id
-    const IdsDosFavoritos = favoritos.map((f) => f.id)
+const ProdutosComponent = ({ produtos }: Props) => {
+  const dispatch = useDispatch()
+  const favoritos = useSelector((state: RootState) => state.favorites.itens)
 
-    return IdsDosFavoritos.includes(produtoId)
+  const produtoEstaNosFavoritos = (produto: ProdutoType) => {
+    return favoritos.some((f) => f.id === produto.id)
+  }
+
+  const handleAdicionarAoCarrinho = (produto: ProdutoType) => {
+    dispatch(adicionarAoCarrinho(produto))
+  }
+
+  const handleFavoritar = (produto: ProdutoType) => {
+    dispatch(favoritar(produto))
   }
 
   return (
@@ -28,11 +32,11 @@ const ProdutosComponent = ({
       <S.Produtos>
         {produtos.map((produto) => (
           <Produto
-            estaNosFavoritos={produtoEstaNosFavoritos(produto)}
             key={produto.id}
             produto={produto}
-            favoritar={favoritar}
-            aoComprar={adicionarAoCarrinho}
+            estaNosFavoritos={produtoEstaNosFavoritos(produto)}
+            adicionarAoCarrinho={() => handleAdicionarAoCarrinho(produto)}
+            favoritar={() => handleFavoritar(produto)}
           />
         ))}
       </S.Produtos>

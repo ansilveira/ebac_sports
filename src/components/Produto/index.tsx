@@ -1,11 +1,11 @@
-import { Produto as ProdutoType } from '../../App'
+import { Produto as ProdutoType } from '../../models/Produto'
 import * as S from './styles'
 
 type Props = {
   produto: ProdutoType
-  aoComprar: (produto: ProdutoType) => void
-  favoritar: (produto: ProdutoType) => void
   estaNosFavoritos: boolean
+  adicionarAoCarrinho: () => void
+  favoritar: () => void
 }
 
 export const paraReal = (valor: number) =>
@@ -15,7 +15,7 @@ export const paraReal = (valor: number) =>
 
 const ProdutoComponent = ({
   produto,
-  aoComprar,
+  adicionarAoCarrinho,
   favoritar,
   estaNosFavoritos
 }: Props) => {
@@ -28,12 +28,12 @@ const ProdutoComponent = ({
       <S.Prices>
         <strong>{paraReal(produto.preco)}</strong>
       </S.Prices>
-      <S.BtnComprar onClick={() => favoritar(produto)} type="button">
+      <S.BtnComprar onClick={favoritar} type="button">
         {estaNosFavoritos
           ? '- Remover dos favoritos'
           : '+ Adicionar aos favoritos'}
       </S.BtnComprar>
-      <S.BtnComprar onClick={() => aoComprar(produto)} type="button">
+      <S.BtnComprar onClick={adicionarAoCarrinho} type="button">
         Adicionar ao carrinho
       </S.BtnComprar>
     </S.Produto>
